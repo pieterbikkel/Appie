@@ -23,6 +23,7 @@ class ShoppingCartViewModel: ObservableObject {
         NetworkManager.shared.getData(path: "/api/v1/list", type: ListResponse.self) { result in
             switch result {
             case .success(let data):
+                print(data)
                 self.listResponse = data
             case .failure(let error):
                 print(error)

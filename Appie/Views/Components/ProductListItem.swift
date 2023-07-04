@@ -11,14 +11,13 @@ import SDWebImageSwiftUI
 struct ProductListItem: View {
     
     var product: Product
-    var viewModel: HomeViewModel
+    @EnvironmentObject private var viewModel: HomeViewModel
     var price: Double
     var showAction: Bool = false
     
-    init(product: Product, viewModel: HomeViewModel) {
+    init(product: Product) {
         
         self.product = product
-        self.viewModel = viewModel
         
         if product.isBonus ?? false {
             price = product.currentPrice ?? product.priceBeforeBonus ?? 11.22
@@ -41,6 +40,7 @@ struct ProductListItem: View {
                 VStack(alignment: .leading) {
                     Text(product.title ?? "")
                         .lineLimit(2)
+                        .foregroundColor(Color.theme.black)
                     
                     if showAction {
                         
@@ -65,6 +65,7 @@ struct ProductListItem: View {
                             viewModel.addProduct(webshopId: product.webshopID ?? 0, amount: 1)
                         } label: {
                             Image(systemName: "plus")
+                                .particleEffect(systemImage: "plus", font: Font.body, status: true, activeTint: Color.theme.white, inActiveTint: Color.theme.gray)
                                 .foregroundColor(Color.theme.white)
                                 .frame(width: 30, height: 30)
                                 .background((product.isBonus ?? false) ? Color.theme.orange : Color.theme.blue )
@@ -80,7 +81,11 @@ struct ProductListItem: View {
 
 struct ProductListItem_Previews: PreviewProvider {
     static var previews: some View {
-        ProductListItem(product: Constants.DefaultModels.bonusProduct, viewModel: HomeViewModel())
-            .frame(height: 200)
+        NavigationStack {
+            ProductListItem(product: Constants.DefaultModels.bonusProduct)
+                .frame(height: 200)
+                .toolbar(.hidden)
+        }.environmentObject(dev.homeVM)
+        
     }
 }

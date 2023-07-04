@@ -15,12 +15,12 @@ struct PriceView: View {
     var body: some View {
         HStack(alignment: .top) {
             Text((normal ? "€" : "") + "\(price.formattedPriceArray[0])")
-                .font(normal ? .system(size: 16) : .system(size: 30, weight: .bold))
             + Text(".")
-                .font(normal ? .system(size: 16) : .system(size: 30, weight: .bold))
             + Text("\(price.formattedPriceArray[1])")
                 .font(normal ? .system(size: 16) : .system(size: 20, weight: .bold))
         }
+        .foregroundColor(Color.theme.black)
+        .font(normal ? .system(size: 16) : .system(size: 30, weight: .bold))
     }
 }
 

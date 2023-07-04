@@ -9,36 +9,35 @@ import SwiftUI
 import AlertToast
 
 struct HomeView: View {
-    @StateObject private var viewModel: HomeViewModel = HomeViewModel()
-    @State private var searchText = ""
+    @EnvironmentObject private var viewModel: HomeViewModel
+    
+    let screenWidth = UIScreen.main.bounds.width
+    let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        NavigationStack {
-            List() {
-                ForEach(viewModel.products, id: \.webshopID) { product in
-                    ProductListItem(product: product, viewModel: viewModel)
-                }
-            }.listStyle(.plain)
-                .searchable(text: $searchText)
-                .onChange(of: searchText) { value in
-                    Task {
-                        if !value.isEmpty && value.count > 1 {
-                            viewModel.search(name: value)
-                        } else {
-                            viewModel.products.removeAll()
-                        }
-                    }
-                }
-                .navigationTitle("Appie")
+        GeometryReader {
+            let size = $0.size
+            let safeArea = $0.safeAreaInsets
+            
+            HeaderView(size: size, safeArea: safeArea)
+                .ignoresSafeArea(.all, edges: .top)
+            
+            .toast(isPresenting: Binding(projectedValue: $viewModel.error)) {
+                AlertToast(displayMode: .hud, type: .regular, title: viewModel.errorMessage)
+            }
         }
-        .toast(isPresenting: Binding(projectedValue: $viewModel.error)) {
-            AlertToast(displayMode: .hud, type: .regular, title: viewModel.errorMessage)
-        }
+        .ignoresSafeArea(.keyboard)
+        .background(Color.theme.white)
+        
+        
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        NavigationStack {
+            HomeView()
+                .toolbar(.hidden)
+        }.environmentObject(dev.homeVM)
     }
 }

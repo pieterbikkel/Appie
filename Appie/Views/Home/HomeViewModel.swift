@@ -17,6 +17,21 @@ class HomeViewModel: ObservableObject {
     private var cancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
     
+    init() {
+        addSubscribers()
+    }
+    
+    func addSubscribers() {
+        $searchText
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .sink { [weak self] searchText in
+                if searchText.count > 1 {
+                    self?.search(name: searchText)
+                }
+            }
+            .store(in: &cancellables)
+    }
+    
     func search(name: String) {
         self.error = false
         self.errorMessage = ""

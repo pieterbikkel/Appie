@@ -17,9 +17,20 @@ struct ShoppingCartView: View {
             List {
                 ForEach(viewModel.listResponse.list, id: \.webshopID) { item in
                     ShoppingCartItemView(item: item)
-                        .frame(height: 80)
+                        .frame(minHeight: 80)
                 }
                 .onDelete(perform: viewModel.deleteItems)
+                
+                ForEach(viewModel.listResponse.totalPerUser ?? [], id: \.name) { user in
+                    HStack {
+                        Text("\(user.name):")
+                        
+                        Spacer()
+                        
+                        PriceView(price: user.total, normal: true)
+                        
+                    }
+                }
                 
                 HStack {
                     Text("Totaal:")
