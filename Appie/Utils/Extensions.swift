@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension Double {
     var formattedPriceArray: [String] {
@@ -30,4 +31,39 @@ extension Double {
             return [formattedString, "00"]
         }
     }
+}
+
+extension UIApplication {
+    
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+}
+
+extension View {
+    func iOS16navBarAdapter(_ colorScheme: ColorScheme) -> some View {
+        if #available(iOS 16, *) {
+            return self
+                .toolbarBackground(Color.theme.black, for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .toolbarColorScheme(colorScheme, for: .navigationBar)
+        } else {
+            return self
+        }
+    }
+}
+
+extension PreviewProvider {
+    static var dev: DeveloperPreview {
+        return DeveloperPreview.instance
+    }
+}
+
+class DeveloperPreview {
+    static let instance = DeveloperPreview()
+    
+    private init() {}
+    
+    let homeVM = HomeViewModel()
 }
