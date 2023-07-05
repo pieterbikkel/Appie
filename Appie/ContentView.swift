@@ -11,6 +11,7 @@ struct ContentView: View {
     
     @State private var selection = 0
     
+    
     var body: some View {
         ZStack {
             Color.theme.white
@@ -21,6 +22,7 @@ struct ContentView: View {
                         Label("Home", systemImage: "house")
                     }
                     .tag(0)
+                
                 BonusView()
                     .tabItem {
                         Label("Bonus", systemImage: "tag")
@@ -29,7 +31,8 @@ struct ContentView: View {
                 ShoppingCartView()
                     .tabItem {
                         Label("Boodschappen", systemImage: "cart")
-                    }.tag(2)
+                    }
+                    .tag(2)                    
             }
             .accentColor(selection == 1 ? Color.theme.orange : Color.theme.blue)
         }

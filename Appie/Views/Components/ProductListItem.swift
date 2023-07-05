@@ -40,6 +40,7 @@ struct ProductListItem: View {
                 VStack(alignment: .leading) {
                     Text(product.title ?? "")
                         .lineLimit(2)
+                        .multilineTextAlignment(.leading)
                         .foregroundColor(Color.theme.black)
                     
                     if showAction {

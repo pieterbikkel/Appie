@@ -12,16 +12,16 @@ import Foundation
 struct ProductResponse: Codable {
     let productID: Int?
     let productCard: ProductCard
-    let tradeItem: TradeItem?
-    let properties: Properties?
-    let disclaimerText: String?
+//    let tradeItem: TradeItem?
+//    let properties: Properties?
+//    let disclaimerText: String?
 }
 
 // MARK: - ProductCard
 struct ProductCard: Codable {
     let webshopID, hqID: Int?
     let title, salesUnitSize: String?
-    let images: [ProductImage]?
+    let images: [ProductImage]
     let priceBeforeBonus, currentPrice: Double?
     let orderAvailabilityStatus, mainCategory, subCategory: String?
     let subCategoryID: Int?
@@ -29,7 +29,7 @@ struct ProductCard: Codable {
     let availableOnline, isPreviouslyBought: Bool?
     let descriptionHighlights: String?
     let propertyIcons: [String]?
-    let properties: Properties?
+//    let properties: Properties?
     let nix18, isStapelBonus: Bool?
     let extraDescriptions: [String]?
     let isBonus: Bool?

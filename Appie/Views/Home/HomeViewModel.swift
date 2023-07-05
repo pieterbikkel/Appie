@@ -69,20 +69,8 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    func getProductDetails(webshopId: Int) {
-        self.error = false
-        self.errorMessage = ""
-        
-        NetworkManager.shared.getData(path: "/api/v1/product/\(webshopId)", type: ProductResponse.self) { result in
-            switch result {
-            case .success(let data):
-                print(data)
-            case .failure(let error):
-                print(error)
-                let error = true
-                let errorMessage = "We fucked up :/"
-            }
-        }
+    func clearResults() {
+        self.products = []
     }
 }
 

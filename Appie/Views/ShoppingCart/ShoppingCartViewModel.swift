@@ -55,7 +55,6 @@ class ShoppingCartViewModel: ObservableObject {
         NetworkManager.shared.postData(path: "/api/v1/list/\(webshopId)", method: "PATCH", type: ListResponse.self, body: newAmount) { result in
             switch result {
             case .success(let data):
-                self.error = true
                 self.listResponse = data
                 self.errorMessage = "Updated"                
             case .failure(let error):

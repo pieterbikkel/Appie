@@ -12,9 +12,12 @@ struct ShoppingCartItemView: View {
     
     var item: ShoppingListItem
     var isBonus: Bool
+    var vm: ShoppingCartViewModel
+    
     @State private var editAmount = false
     @State private var amount: Int
-    var vm: ShoppingCartViewModel
+    @State private var timer: Timer?
+    @State private var remainingSeconds = 2
     
     init(item: ShoppingListItem, vm: ShoppingCartViewModel) {
         
@@ -67,16 +70,15 @@ struct ShoppingCartItemView: View {
                     Button {
                         withAnimation {
                             editAmount.toggle()
+                            startTimer()
                         }
                     } label: {
                         HStack() {
                             Button {
                                 if amount > 0 {
                                     amount -= 1
-                                    if amount == 0 {
-                                        vm.deleteItems(webshopId: item.webshopID ?? 0)
-                                    } else {
-                                        vm.updateAmount(webshopId: item.webshopID ?? 0, amount: amount)
+                                    if remainingSeconds < 2 {
+                                        remainingSeconds += 1
                                     }
                                 }
                             } label: {
@@ -105,7 +107,9 @@ struct ShoppingCartItemView: View {
                             Button {
                                 if amount < 99 {
                                     amount += 1
-                                    vm.updateAmount(webshopId: item.webshopID ?? 0, amount: amount)
+                                    if remainingSeconds < 2 {
+                                        remainingSeconds += 2
+                                    }
                                 }
                             } label: {
                                 Image(systemName: "plus")
@@ -122,6 +126,38 @@ struct ShoppingCartItemView: View {
             }
             .frame(height: 80)
         }
+    }
+    
+    func startTimer() {
+        if timer != nil {
+            timer?.invalidate()
+            timer = nil
+        }
+        
+        remainingSeconds = 2
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            if remainingSeconds > 0 {
+                remainingSeconds -= 1
+            } else {
+                stopTimer()
+            }
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        
+        if amount == 0 {
+            vm.deleteItems(webshopId: item.webshopID ?? 0)
+        } else {
+            vm.updateAmount(webshopId: item.webshopID ?? 0, amount: amount)
+        }
+        
+        withAnimation {
+            editAmount.toggle()
+        }
+        
+        timer = nil
     }
 }
 

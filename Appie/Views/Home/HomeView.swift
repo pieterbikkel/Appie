@@ -15,21 +15,22 @@ struct HomeView: View {
     let screenHeight = UIScreen.main.bounds.height
     
     var body: some View {
-        GeometryReader {
-            let size = $0.size
-            let safeArea = $0.safeAreaInsets
-            
-            HeaderView(size: size, safeArea: safeArea)
-                .ignoresSafeArea(.all, edges: .top)
-            
-            .toast(isPresenting: Binding(projectedValue: $viewModel.error)) {
-                AlertToast(displayMode: .hud, type: .regular, title: viewModel.errorMessage)
+        NavigationStack {
+            GeometryReader {
+                let size = $0.size
+                let safeArea = $0.safeAreaInsets
+                
+                HeaderView(size: size, safeArea: safeArea)
+                    .ignoresSafeArea(.all, edges: .top)
+                
+                    .toast(isPresenting: Binding(projectedValue: $viewModel.error)) {
+                        AlertToast(displayMode: .hud, type: .regular, title: viewModel.errorMessage)
+                    }
             }
+            .ignoresSafeArea(.keyboard)
+            .background(Color.theme.white)
+            .toolbar(.hidden)
         }
-        .ignoresSafeArea(.keyboard)
-        .background(Color.theme.white)
-        
-        
     }
 }
 

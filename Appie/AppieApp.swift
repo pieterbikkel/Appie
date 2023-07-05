@@ -10,7 +10,8 @@ import SwiftUI
 @main
 struct AppieApp: App {
     
-    @StateObject private var vm = HomeViewModel()
+    @StateObject private var homeVM = HomeViewModel()
+    @StateObject private var shoppingVM = ShoppingCartViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -18,7 +19,8 @@ struct AppieApp: App {
                 ContentView()
                     .preferredColorScheme(.light)
             }
-            .environmentObject(vm)
+            .environmentObject(homeVM)
+            .environmentObject(shoppingVM)
         }
     }
 }

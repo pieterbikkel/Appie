@@ -24,8 +24,10 @@ struct HeaderView: View {
                     
                     VStack(spacing: 15) {
                         ForEach(vm.products, id: \.webshopID) { product in
-                            ProductListItem(product: product)
-                                .frame(height: 120)
+                            NavigationLink(destination: ProductDetailView(webshopId: product.webshopID ?? 0, currentPrice: product.currentPrice ?? 0.0, priceBeforeBonus: product.priceBeforeBonus ?? 0.0, isBonus: product.isBonus ?? false)) {
+                                    ProductListItem(product: product)
+                                        .frame(height: 120)
+                                }
                         }
                     }
                     .padding(.vertical)

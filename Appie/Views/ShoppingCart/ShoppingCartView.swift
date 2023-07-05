@@ -82,6 +82,17 @@ struct ShoppingCartView: View {
             }
 
             .navigationTitle("Karretje")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(Color.theme.black)
+                    }
+
+                }
+            }
         }
         .toast(isPresenting: Binding(projectedValue: $viewModel.error)) {
             AlertToast(displayMode: .hud, type: .regular, title: viewModel.errorMessage)

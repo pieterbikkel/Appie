@@ -33,6 +33,7 @@ struct SearchBar: View {
                         .onTapGesture {
                             UIApplication.shared.endEditing()
                             searchText = ""
+                            vm.clearResults()
                         }
                     ,alignment: .trailing
                 )
