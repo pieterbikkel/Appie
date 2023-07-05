@@ -34,8 +34,8 @@ struct ShoppingListItem: Codable {
 
 // MARK: - AmountPerUser
 struct AmountPerUser: Codable {
-    let name: String?
-    let amount: Int?
+    let name: String
+    var amount: Int
 }
 
 struct TotalPerUser: Codable {

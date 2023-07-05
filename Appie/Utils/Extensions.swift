@@ -66,4 +66,5 @@ class DeveloperPreview {
     private init() {}
     
     let homeVM = HomeViewModel()
+    let shoppingCartVM = ShoppingCartViewModel()
 }

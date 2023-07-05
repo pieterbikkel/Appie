@@ -14,13 +14,37 @@ struct ShoppingCartView: View {
     
     var body: some View {
         NavigationStack {
-            List {
+            ScrollView {
                 ForEach(viewModel.listResponse.list, id: \.webshopID) { item in
-                    ShoppingCartItemView(item: item)
-                        .frame(minHeight: 80)
+                    let bonus = item.currentPrice != nil
+                    
+                    // MARK: Aantal per user
+                    ForEach(item.amountPerUser ?? [], id: \.name) { user in
+                        
+                        HStack {
+                            Text("\(user.amount)")
+                            
+                            Text(user.name)
+                            
+                            Spacer()
+                            
+                            if bonus {
+                                PriceView(price: item.currentPrice ?? 0.0, normal: true)
+                            } else {
+                                PriceView(price: item.priceBeforeBonus ?? 0.0, normal: true)
+                            }
+                        }
+                    }
+                    
+                    // MARK: Item
+                    ShoppingCartItemView(item: item, vm: viewModel)
+                        .frame(height: 80)
+                    
+                    Divider()
                 }
-                .onDelete(perform: viewModel.deleteItems)
+            
                 
+                // MARK: Totaal bedrag per user
                 ForEach(viewModel.listResponse.totalPerUser ?? [], id: \.name) { user in
                     HStack {
                         Text("\(user.name):")
@@ -28,9 +52,19 @@ struct ShoppingCartView: View {
                         Spacer()
                         
                         PriceView(price: user.total, normal: true)
-                        
                     }
                 }
+                
+                HStack {
+                    Text("Totaal bespaard:")
+                    
+                    Spacer()
+                    
+                    PriceView(price: viewModel.listResponse.bonusAmount ?? 0.0, normal: true)
+                    
+                }
+                .foregroundColor(Color.theme.orange)
+                .font(.headline)
                 
                 HStack {
                     Text("Totaal:")
@@ -42,17 +76,18 @@ struct ShoppingCartView: View {
                 }
                 .font(.headline)
             }
+            .padding(.horizontal)
             .refreshable {
                 viewModel.getShoppingCartItems()
             }
-            .onAppear {
-                viewModel.getShoppingCartItems()
-            }
-            
+
             .navigationTitle("Karretje")
         }
         .toast(isPresenting: Binding(projectedValue: $viewModel.error)) {
             AlertToast(displayMode: .hud, type: .regular, title: viewModel.errorMessage)
+        }
+        .onAppear {
+            viewModel.getShoppingCartItems()
         }
     }
 }

@@ -9,4 +9,11 @@ import Foundation
 
 class BonusViewModel: ObservableObject {
     
+    func getBonusMetadata() {
+        
+    }
+    
+    func getBonusCategoryProducts() {
+        
+    }
 }

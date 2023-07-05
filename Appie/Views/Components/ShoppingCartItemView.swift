@@ -12,10 +12,15 @@ struct ShoppingCartItemView: View {
     
     var item: ShoppingListItem
     var isBonus: Bool
+    @State private var editAmount = false
+    @State private var amount: Int
+    var vm: ShoppingCartViewModel
     
-    init(item: ShoppingListItem) {
+    init(item: ShoppingListItem, vm: ShoppingCartViewModel) {
         
         self.item = item
+        self.amount = item.amount ?? 0
+        self.vm = vm
         
         if (item.currentPrice != nil) {
             self.isBonus = true
@@ -27,6 +32,7 @@ struct ShoppingCartItemView: View {
     var body: some View {
         GeometryReader { reader in
             VStack(alignment: .leading) {
+                
                 HStack {
                     WebImage(url: URL(string: item.images?.last?.url ?? Constants.backupImage))
                         .resizable()
@@ -56,29 +62,75 @@ struct ShoppingCartItemView: View {
                         
                     }
                     
-                    Spacer()
+                    Spacer(minLength: editAmount ? 20 : 0)
                     
-                    Text("\(item.amount ?? 0)")
-                        .font(.headline)
-                }
-                
-                ForEach(item.amountPerUser ?? [], id: \.name) { user in
-                    HStack {
-                        Text(user.name ?? "wtf")
-                            .font(.headline)
-                        
-                        Spacer()
-                        
-                        Text("\(user.amount ?? 0)")
+                    Button {
+                        withAnimation {
+                            editAmount.toggle()
+                        }
+                    } label: {
+                        HStack() {
+                            Button {
+                                if amount > 0 {
+                                    amount -= 1
+                                    if amount == 0 {
+                                        vm.deleteItems(webshopId: item.webshopID ?? 0)
+                                    } else {
+                                        vm.updateAmount(webshopId: item.webshopID ?? 0, amount: amount)
+                                    }
+                                }
+                            } label: {
+                                Image(systemName: "minus")
+                                    .frame(width: 25, height: 25)
+                                    .foregroundColor(Color.theme.white)
+                                    .background(isBonus ? Color.theme.orange : Color.theme.black)
+                                    .cornerRadius(13)
+                            }
+                            .offset(x: editAmount ? 0 : 35)
+                            .frame(width: editAmount ? nil : 0)
+                            
+                            Text("\(amount)")
+                                .frame(width: 25)
+                                .font(.headline)
+                                .foregroundColor(isBonus ? Color.theme.orange : Color.theme.black)
+                                .padding(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .stroke(lineWidth: 2)
+                                        .foregroundColor(isBonus ? Color.theme.orange : Color.theme.black)
+                                )
+                                .background(Color.theme.white)
+                                .zIndex(2)
+                            
+                            Button {
+                                if amount < 99 {
+                                    amount += 1
+                                    vm.updateAmount(webshopId: item.webshopID ?? 0, amount: amount)
+                                }
+                            } label: {
+                                Image(systemName: "plus")
+                                    .frame(width: 25, height: 25)
+                                    .foregroundColor(Color.theme.white)
+                                    .background(isBonus ? Color.theme.orange : Color.theme.black)
+                                    .cornerRadius(13)
+                            }
+                            .frame(width: editAmount ? nil : 0)
+                            .offset(x: editAmount ? 0 : -35)
+                        }
                     }
                 }
-            }.frame(height: 100 + CGFloat(20 * (item.amountPerUser?.count ?? 50)))
+            }
+            .frame(height: 80)
         }
     }
 }
 
 struct ShoppingCartItemView_Previews: PreviewProvider {
     static var previews: some View {
-        ShoppingCartItemView(item: Constants.DefaultModels.shoppingCartItem)
+        NavigationStack {
+            ShoppingCartItemView(item: Constants.DefaultModels.shoppingCartItem, vm: dev.shoppingCartVM)
+                .padding(.horizontal)
+                .toolbar(.hidden)
+        }
     }
 }
